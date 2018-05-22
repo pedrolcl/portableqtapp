@@ -1,8 +1,8 @@
 Portable Qt Application Proof of Concept
 ========================================
 
-This repository contains a simple _proof of concept_ Qt GUI app that may be
-used as a model to build a portable real application.
+This repository contains a simple _proof of concept_ Qt GUI desktop application that may be
+used as a model to build a real portable application.
 
 Portable application is a concept explained in this [Wikipedia article](https://en.wikipedia.org/wiki/Portable_application).
 
@@ -14,7 +14,7 @@ Portable application is a concept explained in this [Wikipedia article](https://
 
 For an application to be truly portable, Qt style settings need to be forced
 to use the [INI file format](http://doc.qt.io/qt-5/qsettings.html#Format-enum)
-instead of the native style, and the users should be able to load and save the
+instead of the native format, and the users should be able to load and save the
 settings to a file name and place of their choice.
 
 A PortableSettings class is provided, implementing a [Singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern),
@@ -26,12 +26,13 @@ Using the sample
 
 The program accepts two command line arguments:
 
--c fileName         Save and load settings from this file name
+```
+ -c fileName    Save and load settings from this file name 
+ -n             Save and load settings from native storage (not portable) 
+```
 
--n                  Save and load settings from native storage (not portable)
-
-If no arguments are provided, a settings file name with the same name as the program and
-a ".config" file name suffix is used, loated at the same directory of the executable.
+If no arguments are provided, a settings file name with the same name as the executable and
+a ".config" file name suffix is used, located at the same directory of the executable.
 
 The GUI also provides a menu option to export the settings to an INI file, and a dialog
 box to edit the settings.
@@ -39,7 +40,8 @@ box to edit the settings.
 License
 -------
 
-Portable Qt App Template
+Portable Qt Application Template
+
 Copyright (C) 2018 Pedro López-Cabanillas.
 
 This program is free software: you can redistribute it and/or modify
