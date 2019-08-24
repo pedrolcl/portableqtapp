@@ -16,11 +16,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mainwindow.h"
 #include <QCommandLineParser>
 #include <QApplication>
-#include <QFileInfo>
-#include <QDir>
+#include "mainwindow.h"
+#include "portablesettings.h"
 
 int main(int argc, char *argv[])
 {
@@ -46,14 +45,12 @@ int main(int argc, char *argv[])
     parser.addOption(nativeOption);
     parser.process(app);
 
-    MainWindow w;
     if (parser.isSet(configFileOption)) {
-        w.setPortableConfig(parser.value(configFileOption));
+        PortableSettings::instance()->setPortableConfigFile(parser.value(configFileOption));
     } else if (!parser.isSet(nativeOption)) {
-        QFileInfo infoA(QCoreApplication::applicationFilePath());
-        QFileInfo infoC(infoA.absoluteDir(), infoA.baseName() + ".conf");
-        w.setPortableConfig(infoC.absoluteFilePath());
+        PortableSettings::instance()->setStandardPortableConfigFile();
     }
+    MainWindow w;
     w.show();
     return app.exec();
 }

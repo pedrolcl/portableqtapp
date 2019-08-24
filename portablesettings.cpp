@@ -16,6 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
 #include "portablesettings.h"
 
 PortableSettings::PortableSettings(QObject *parent) : QObject(parent)
@@ -23,10 +26,34 @@ PortableSettings::PortableSettings(QObject *parent) : QObject(parent)
     ResetDefaults();
 }
 
-PortableSettings* PortableSettings::instance()
+PortableSettings::~PortableSettings()
+{
+    resetSettings();
+}
+
+PortableSettings *PortableSettings::instance()
 {
     static PortableSettings inst;
     return &inst;
+}
+
+QSettings *PortableSettings::settingsInstance()
+{
+    if (m_settings == nullptr) {
+        if (m_portableConfigFile.isEmpty()) {
+            QSettings::setDefaultFormat(QSettings::NativeFormat);
+            m_settings = new QSettings();
+        } else {
+            m_settings = new QSettings(m_portableConfigFile, QSettings::IniFormat);
+        }
+    }
+    return m_settings;
+}
+
+void PortableSettings::resetSettings()
+{
+    Save();
+    delete m_settings;
 }
 
 void PortableSettings::ResetDefaults()
@@ -38,48 +65,58 @@ void PortableSettings::ResetDefaults()
     emit ValuesChanged();
 }
 
-void PortableSettings::ReadFromNativeStorage()
+void PortableSettings::Load()
 {
-    QSettings::setDefaultFormat(QSettings::NativeFormat);
-    QSettings settings;
-    internalRead(settings);
+    internalLoad(settingsInstance());
 }
 
-void PortableSettings::SaveToNativeStorage()
+void PortableSettings::Save()
 {
-    QSettings::setDefaultFormat(QSettings::NativeFormat);
-    QSettings settings;
-    internalSave(settings);
+    internalSave(settingsInstance());
 }
 
-void PortableSettings::ReadFromFile(const QString& filepath)
+void PortableSettings::SaveToFile(const QString &filepath)
 {
     QSettings settings(filepath, QSettings::IniFormat);
-    internalRead(settings);
+    internalSave(&settings);
 }
 
-void PortableSettings::SaveToFile(const QString& filepath)
+void PortableSettings::internalLoad(QSettings *settings)
 {
-    QSettings settings(filepath, QSettings::IniFormat);
-    internalSave(settings);
-}
-
-void PortableSettings::internalRead(QSettings &settings)
-{
-    m_boolOption = settings.value("BoolOption", false).toBool();
-    m_choiceOption = settings.value("ChoiceOption", QString()).toString();
-    m_textOption = settings.value("TextOption", QString()).toString();
-    m_integerOption = settings.value("IntegerOption", 0).toInt();
+    m_boolOption = settings->value("BoolOption", false).toBool();
+    m_choiceOption = settings->value("ChoiceOption", QString()).toString();
+    m_textOption = settings->value("TextOption", QString()).toString();
+    m_integerOption = settings->value("IntegerOption", 0).toInt();
     emit ValuesChanged();
 }
 
-void PortableSettings::internalSave(QSettings &settings)
+void PortableSettings::internalSave(QSettings *settings)
 {
-    settings.setValue("BoolOption", m_boolOption);
-    settings.setValue("ChoiceOption", m_choiceOption);
-    settings.setValue("TextOption", m_textOption);
-    settings.setValue("IntegerOption", m_integerOption);
-    settings.sync();
+    settings->setValue("BoolOption", m_boolOption);
+    settings->setValue("ChoiceOption", m_choiceOption);
+    settings->setValue("TextOption", m_textOption);
+    settings->setValue("IntegerOption", m_integerOption);
+    settings->sync();
+}
+
+QString PortableSettings::portableConfigFile() const
+{
+    return m_portableConfigFile;
+}
+
+void PortableSettings::setPortableConfigFile(const QString &portableConfigFile)
+{
+    if (m_portableConfigFile != portableConfigFile) {
+        resetSettings();
+    }
+    m_portableConfigFile = portableConfigFile;
+}
+
+void PortableSettings::setStandardPortableConfigFile()
+{
+    QFileInfo infoA(QCoreApplication::applicationFilePath());
+    QFileInfo infoC(infoA.absoluteDir(), infoA.baseName() + ".conf");
+    setPortableConfigFile(infoC.absoluteFilePath());
 }
 
 int PortableSettings::integerOption() const

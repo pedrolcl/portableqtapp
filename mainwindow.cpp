@@ -60,25 +60,14 @@ void MainWindow::exportSettings()
     }
 }
 
-void MainWindow::setPortableConfig(const QString& fileName)
-{
-    m_portableConfig = fileName;
-}
-
 void MainWindow::showEvent(QShowEvent *ev)
 {
-    if (m_portableConfig.isEmpty())
-        PortableSettings::instance()->ReadFromNativeStorage();
-    else
-        PortableSettings::instance()->ReadFromFile(m_portableConfig);
+    PortableSettings::instance()->Load();
     QMainWindow::showEvent(ev);
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
-    if (m_portableConfig.isEmpty())
-        PortableSettings::instance()->SaveToNativeStorage();
-    else
-        PortableSettings::instance()->SaveToFile(m_portableConfig);
+    PortableSettings::instance()->Save();
     QMainWindow::closeEvent(ev);
 }

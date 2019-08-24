@@ -32,7 +32,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void setPortableConfig(const QString& fileName);
 
 public slots:
     void editSettings();
@@ -43,7 +42,6 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    QString m_portableConfig;
 };
 
 #endif // MAINWINDOW_H

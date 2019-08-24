@@ -20,6 +20,7 @@
 #define PORTABLESETTINGS_H
 
 #include <QObject>
+#include <QPointer>
 #include <QString>
 #include <QSettings>
 
@@ -29,6 +30,8 @@ class PortableSettings : public QObject
 
 public:
     static PortableSettings* instance();
+    QSettings *settingsInstance();
+    void resetSettings();
 
     bool boolOption() const;
     void setBoolOption(bool boolOption);
@@ -42,21 +45,28 @@ public:
     int integerOption() const;
     void setIntegerOption(int integerOption);
 
+    QString portableConfigFile() const;
+    void setPortableConfigFile(const QString &portableConfigFile);
+    void setStandardPortableConfigFile();
+
 signals:
     void ValuesChanged();
 
 public slots:
     void ResetDefaults();
-    void ReadFromNativeStorage();
-    void ReadFromFile(const QString &filepath);
-    void SaveToNativeStorage();
+    void Load();
+    void Save();
     void SaveToFile(const QString &filepath);
 
 private:
     explicit PortableSettings(QObject *parent = nullptr);
-    void internalRead(QSettings& settings);
-    void internalSave(QSettings& settings);
+    ~PortableSettings();
 
+    void internalLoad(QSettings *settings);
+    void internalSave(QSettings *settings);
+
+    QPointer<QSettings> m_settings;
+    QString m_portableConfigFile;
     bool    m_boolOption;
     QString m_choiceOption;
     QString m_textOption;
