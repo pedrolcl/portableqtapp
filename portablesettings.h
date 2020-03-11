@@ -47,9 +47,9 @@ signals:
 
 public slots:
     void ResetDefaults();
-    void ReadFromNativeStorage();
+    void ReadSettings();
     void ReadFromFile(const QString &filepath);
-    void SaveToNativeStorage();
+    void SaveSettings();
     void SaveToFile(const QString &filepath);
 
 private:

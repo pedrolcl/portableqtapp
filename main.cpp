@@ -16,18 +16,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mainwindow.h"
 #include <QCommandLineParser>
 #include <QApplication>
-#include <QFileInfo>
-#include <QDir>
+#include <QSettings>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QCoreApplication::setOrganizationName("MyApps");
-    QCoreApplication::setApplicationName("PortableQtApp template");
-    QCoreApplication::setApplicationVersion("1.0.0");
+    QCoreApplication::setApplicationName("PortableQtApp");
+    QCoreApplication::setApplicationVersion("1.1.1");
     QCommandLineParser parser;
     parser.setApplicationDescription(
         QString("%1 v.%2\n\n%3")
@@ -40,19 +39,15 @@ int main(int argc, char *argv[])
     );
     parser.addHelpOption();
     parser.addVersionOption();
-    QCommandLineOption configFileOption(QStringList() << "c" << "config", "A configuration file for portable use", "configFile");
-    parser.addOption(configFileOption);
-    QCommandLineOption nativeOption(QStringList() << "n" << "native", "Native settings format (not portable)");
-    parser.addOption(nativeOption);
+    QCommandLineOption portableOption({"p", "portable"}, "Portable settings format (.ini)");
+    parser.addOption(portableOption);
     parser.process(app);
 
     MainWindow w;
-    if (parser.isSet(configFileOption)) {
-        w.setPortableConfig(parser.value(configFileOption));
-    } else if (!parser.isSet(nativeOption)) {
-        QFileInfo infoA(QCoreApplication::applicationFilePath());
-        QFileInfo infoC(infoA.absoluteDir(), infoA.baseName() + ".conf");
-        w.setPortableConfig(infoC.absoluteFilePath());
+    if (parser.isSet(portableOption)) {
+        w.setPortableConfig();
+    } else {
+        QSettings::setDefaultFormat(QSettings::NativeFormat);
     }
     w.show();
     return app.exec();

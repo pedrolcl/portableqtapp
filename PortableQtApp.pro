@@ -18,6 +18,7 @@ TARGET = PortableQtApp
 TEMPLATE = app
 QT += core gui widgets
 DEFINES += QT_DEPRECATED_WARNINGS
+CONFIG += c++11
 
 SOURCES += \
     main.cpp \

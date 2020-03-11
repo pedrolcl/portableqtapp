@@ -16,6 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 #include "portablesettings.h"
 
 PortableSettings::PortableSettings(QObject *parent) : QObject(parent)
@@ -38,28 +41,30 @@ void PortableSettings::ResetDefaults()
     emit ValuesChanged();
 }
 
-void PortableSettings::ReadFromNativeStorage()
+void PortableSettings::ReadSettings()
 {
-    QSettings::setDefaultFormat(QSettings::NativeFormat);
     QSettings settings;
+    qDebug() << Q_FUNC_INFO << settings.fileName();
     internalRead(settings);
 }
 
-void PortableSettings::SaveToNativeStorage()
+void PortableSettings::SaveSettings()
 {
-    QSettings::setDefaultFormat(QSettings::NativeFormat);
     QSettings settings;
+    qDebug() << Q_FUNC_INFO << settings.fileName();
     internalSave(settings);
 }
 
 void PortableSettings::ReadFromFile(const QString& filepath)
 {
+    qDebug() << Q_FUNC_INFO << filepath;
     QSettings settings(filepath, QSettings::IniFormat);
     internalRead(settings);
 }
 
 void PortableSettings::SaveToFile(const QString& filepath)
 {
+    qDebug() << Q_FUNC_INFO << filepath;
     QSettings settings(filepath, QSettings::IniFormat);
     internalSave(settings);
 }

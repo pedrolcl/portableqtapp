@@ -18,6 +18,7 @@
 
 #include <QApplication>
 #include <QFileDialog>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "settingsdialog.h"
@@ -25,7 +26,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_portableConfig(false)
 {
     ui->setupUi(this);
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
@@ -60,25 +62,21 @@ void MainWindow::exportSettings()
     }
 }
 
-void MainWindow::setPortableConfig(const QString& fileName)
+void MainWindow::setPortableConfig()
 {
-    m_portableConfig = fileName;
+    m_portableConfig = true;
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QApplication::applicationDirPath());
 }
 
 void MainWindow::showEvent(QShowEvent *ev)
 {
-    if (m_portableConfig.isEmpty())
-        PortableSettings::instance()->ReadFromNativeStorage();
-    else
-        PortableSettings::instance()->ReadFromFile(m_portableConfig);
+    PortableSettings::instance()->ReadSettings();
     QMainWindow::showEvent(ev);
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
-    if (m_portableConfig.isEmpty())
-        PortableSettings::instance()->SaveToNativeStorage();
-    else
-        PortableSettings::instance()->SaveToFile(m_portableConfig);
+    PortableSettings::instance()->SaveSettings();
     QMainWindow::closeEvent(ev);
 }
