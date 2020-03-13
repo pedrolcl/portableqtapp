@@ -54,8 +54,8 @@ public slots:
 
 private:
     explicit PortableSettings(QObject *parent = nullptr);
-    void internalRead(QSettings& settings);
-    void internalSave(QSettings& settings);
+    void internalRead(QSettings &settings);
+    void internalSave(QSettings &settings);
 
     bool    m_boolOption;
     QString m_choiceOption;

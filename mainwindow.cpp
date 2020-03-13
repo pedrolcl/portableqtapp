@@ -23,6 +23,7 @@
 #include "ui_mainwindow.h"
 #include "settingsdialog.h"
 #include "portablesettings.h"
+#include "settings.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,11 +63,23 @@ void MainWindow::exportSettings()
     }
 }
 
-void MainWindow::setPortableConfig()
+void MainWindow::setPortableConfig(const QString fileName)
 {
     m_portableConfig = true;
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QApplication::applicationDirPath());
+    if (fileName.isEmpty()) {
+        QFileInfo appInfo(QCoreApplication::applicationFilePath());
+#ifdef Q_OS_MACOS
+        QDir bundleDir(appInfo.absoluteDir());
+        bundleDir.cdUp();
+        bundleDir.cdUp();
+        QFileInfo cfgInfo(bundlDir, appInfo.baseName() + ".conf");
+#else
+        QFileInfo cfgInfo(appInfo.absoluteDir(), appInfo.baseName() + ".conf");
+#endif
+        Settings::setFileName(cfgInfo.absoluteFilePath());
+    } else {
+        Settings::setFileName(fileName);
+    }
 }
 
 void MainWindow::showEvent(QShowEvent *ev)

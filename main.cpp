@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     );
     parser.addHelpOption();
     parser.addVersionOption();
-    QCommandLineOption portableOption({"p", "portable"}, "Portable settings format (.ini)");
+    QCommandLineOption portableOption({"p", "portable"}, "Portable settings format file (.ini)");
     parser.addOption(portableOption);
     parser.process(app);
 

@@ -23,11 +23,13 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    settings.cpp \
     settingsdialog.cpp \
     portablesettings.cpp
 
 HEADERS += \
     mainwindow.h \
+    settings.h \
     settingsdialog.h \
     portablesettings.h
 

@@ -16,34 +16,23 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
-#include <QMainWindow>
+#include <QSettings>
+#include <QScopedPointer>
 
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class Settings
 {
-    Q_OBJECT
-
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    void setPortableConfig(const QString fileName = QString());
-
-public slots:
-    void editSettings();
-    void exportSettings();
-
-    void showEvent(QShowEvent *ev) override;
-    void closeEvent(QCloseEvent *ev) override;
+    QSettings* getQSettings();
+    QSettings& operator*();
+    QSettings* operator->();
+    static void setFileName(const QString name);
 
 private:
-    Ui::MainWindow *ui;
-    bool m_portableConfig;
+    QScopedPointer<QSettings> m_settings{nullptr};
+    static QString s_fileName;
 };
 
-#endif // MAINWINDOW_H
+#endif // SETTINGS_H

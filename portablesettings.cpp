@@ -20,6 +20,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include "portablesettings.h"
+#include "settings.h"
 
 PortableSettings::PortableSettings(QObject *parent) : QObject(parent)
 {
@@ -43,29 +44,29 @@ void PortableSettings::ResetDefaults()
 
 void PortableSettings::ReadSettings()
 {
-    QSettings settings;
-    qDebug() << Q_FUNC_INFO << settings.fileName();
-    internalRead(settings);
+    Settings settings;
+    qDebug() << Q_FUNC_INFO << settings->fileName();
+    internalRead(*settings);
 }
 
 void PortableSettings::SaveSettings()
 {
-    QSettings settings;
-    qDebug() << Q_FUNC_INFO << settings.fileName();
-    internalSave(settings);
+    Settings settings;
+    qDebug() << Q_FUNC_INFO << settings->fileName();
+    internalSave(*settings);
 }
 
-void PortableSettings::ReadFromFile(const QString& filepath)
+void PortableSettings::ReadFromFile(const QString &filepath)
 {
-    qDebug() << Q_FUNC_INFO << filepath;
     QSettings settings(filepath, QSettings::IniFormat);
+    qDebug() << Q_FUNC_INFO << settings.fileName();
     internalRead(settings);
 }
 
-void PortableSettings::SaveToFile(const QString& filepath)
+void PortableSettings::SaveToFile(const QString &filepath)
 {
-    qDebug() << Q_FUNC_INFO << filepath;
     QSettings settings(filepath, QSettings::IniFormat);
+    qDebug() << Q_FUNC_INFO << settings.fileName();
     internalSave(settings);
 }
 
