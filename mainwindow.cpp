@@ -19,6 +19,10 @@
 #include <QApplication>
 #include <QFileDialog>
 
+#if defined(Q_OS_MACOS)
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "settingsdialog.h"
@@ -68,11 +72,10 @@ void MainWindow::setPortableConfig(const QString fileName)
     m_portableConfig = true;
     if (fileName.isEmpty()) {
         QFileInfo appInfo(QCoreApplication::applicationFilePath());
-#ifdef Q_OS_MACOS
-        QDir bundleDir(appInfo.absoluteDir());
-        bundleDir.cdUp();
-        bundleDir.cdUp();
-        QFileInfo cfgInfo(bundlDir, appInfo.baseName() + ".conf");
+#if defined(Q_OS_MACOS)
+        CFURLRef url = static_cast<CFURLRef>(CFAutorelease(static_cast<CFURLRef>(CFBundleCopyBundleURL(CFBundleGetMainBundle()))));
+        QString path = QUrl::fromCFURL(url).path() + "../";
+        QFileInfo cfgInfo(path, appInfo.baseName() + ".conf");
 #else
         QFileInfo cfgInfo(appInfo.absoluteDir(), appInfo.baseName() + ".conf");
 #endif

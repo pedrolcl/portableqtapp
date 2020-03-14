@@ -36,3 +36,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     settingsdialog.ui
+
+macx {
+    LIBS += -framework CoreFoundation
+}
